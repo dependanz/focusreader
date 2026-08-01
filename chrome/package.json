@@ -1,0 +1,14 @@
+{
+  "name": "focusreader-chrome-extension",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A pointer-following reading guard for Chrome.",
+  "scripts": {
+    "check": "node scripts/check.mjs",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
+

@@ -1,0 +1,15 @@
+node_modules/
+dist/
+coverage/
+/artifacts/
+/build/
+**/bin/
+**/obj/
+.vs/
+*.user
+*.zip
+*.crx
+*.pem
+.DS_Store
+Thumbs.db
+

@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "FocusReader",
+  "version": "0.1.0",
+  "version_name": "0.1.0 alpha",
+  "description": "Keep unread text out of sight with a pointer-following reading guard.",
+  "minimum_chrome_version": "114",
+  "permissions": [
+    "storage"
+  ],
+  "action": {
+    "default_title": "FocusReader",
+    "default_popup": "src/popup/popup.html"
+  },
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "commands": {
+    "toggle-focusreader": {
+      "suggested_key": {
+        "default": "Alt+Shift+F"
+      },
+      "description": "Toggle FocusReader on the current tab"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "src/shared/preferences.js",
+        "src/shared/geometry.js",
+        "src/content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}
+

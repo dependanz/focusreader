@@ -1,0 +1,57 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build and publish release
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Validate version tag
+        shell: pwsh
+        run: |
+          $version = $env:GITHUB_REF_NAME -replace '^v', ''
+          if ($version -notmatch '^\d+\.\d+\.\d+$') {
+            throw "Release tags must use vMAJOR.MINOR.PATCH, such as v0.1.0."
+          }
+          "FOCUSREADER_VERSION=$version" >> $env:GITHUB_ENV
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - name: Test Chrome extension
+        working-directory: chrome
+        run: |
+          npm test
+          npm run check
+
+      - name: Install Inno Setup
+        shell: pwsh
+        run: choco install innosetup --version=6.7.1 --yes --no-progress
+
+      - name: Build release artifacts
+        shell: pwsh
+        run: .\scripts\build-release.ps1 -Version $env:FOCUSREADER_VERSION
+
+      - name: Create GitHub Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $assets = Get-ChildItem -LiteralPath artifacts -File | Select-Object -ExpandProperty FullName
+          gh release create $env:GITHUB_REF_NAME $assets `
+            --verify-tag `
+            --generate-notes `
+            --title "FocusReader $env:GITHUB_REF_NAME"

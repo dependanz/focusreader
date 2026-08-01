@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  chrome:
+    name: Chrome extension
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - name: Run tests
+        working-directory: chrome
+        run: npm test
+
+      - name: Validate extension package
+        working-directory: chrome
+        run: npm run check
+
+  windows:
+    name: Windows app
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Configure native C build
+        run: cmake -S windows -B build\windows "-DFOCUSREADER_VERSION=0.1.0"
+
+      - name: Build native C app
+        run: cmake --build build\windows --config Release
+
+      - name: Run native C checks
+        run: ctest --test-dir build\windows -C Release --output-on-failure

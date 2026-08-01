@@ -1,0 +1,220 @@
+:root {
+  color-scheme: light;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  color: #1f282f;
+  background: #f2efe9;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  width: 340px;
+  margin: 0;
+  background:
+    radial-gradient(circle at 85% 5%, rgba(198, 95, 60, 0.13), transparent 35%),
+    #f2efe9;
+}
+
+main {
+  padding: 20px;
+}
+
+.brand-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.eyebrow {
+  margin: 0 0 5px;
+  color: #c65f3c;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+h1 {
+  max-width: 220px;
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+}
+
+.status-badge {
+  flex: 0 0 auto;
+  padding: 5px 8px;
+  border: 1px solid rgba(31, 40, 47, 0.12);
+  border-radius: 999px;
+  color: #667078;
+  background: rgba(255, 255, 255, 0.6);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.status-badge[data-state="on"] {
+  color: #ffffff;
+  border-color: #c65f3c;
+  background: #c65f3c;
+}
+
+.status-badge[data-state="unavailable"] {
+  color: #7c4f42;
+  border-color: #ddc7be;
+  background: #f7e8e2;
+}
+
+.primary-button {
+  width: 100%;
+  margin-top: 18px;
+  padding: 12px 14px;
+  border: 0;
+  border-radius: 10px;
+  color: #ffffff;
+  background: #1f282f;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.primary-button:hover:not(:disabled) {
+  background: #303b43;
+}
+
+.primary-button:focus-visible,
+input:focus-visible {
+  outline: 3px solid rgba(198, 95, 60, 0.35);
+  outline-offset: 2px;
+}
+
+.primary-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.availability-message {
+  min-height: 17px;
+  margin: 8px 2px 0;
+  color: #667078;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.settings {
+  margin-top: 17px;
+  overflow: hidden;
+  border: 1px solid rgba(31, 40, 47, 0.1);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.68);
+  box-shadow: 0 8px 24px rgba(44, 36, 30, 0.06);
+}
+
+.section-heading,
+.switch-row,
+.field-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 13px 14px;
+}
+
+.section-heading {
+  align-items: baseline;
+  border-bottom: 1px solid rgba(31, 40, 47, 0.08);
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.section-heading span,
+small {
+  color: #717a80;
+  font-size: 10px;
+}
+
+.switch-row,
+.field-row {
+  min-height: 61px;
+}
+
+.switch-row + .switch-row,
+.switch-row + .field-row,
+.field-row + .field-row {
+  border-top: 1px solid rgba(31, 40, 47, 0.07);
+}
+
+.switch-row > span,
+.field-row > span {
+  display: grid;
+  gap: 3px;
+}
+
+strong {
+  font-size: 12px;
+}
+
+input[type="checkbox"] {
+  width: 36px;
+  height: 20px;
+  margin: 0;
+  accent-color: #c65f3c;
+  cursor: pointer;
+}
+
+input[type="range"] {
+  width: 116px;
+  accent-color: #c65f3c;
+  cursor: pointer;
+}
+
+input[type="color"] {
+  width: 44px;
+  height: 30px;
+  padding: 2px;
+  border: 1px solid rgba(31, 40, 47, 0.16);
+  border-radius: 8px;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+footer {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 14px;
+  color: #717a80;
+  font-size: 10px;
+}
+
+kbd {
+  padding: 2px 5px;
+  border: 1px solid rgba(31, 40, 47, 0.18);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  color: #49545b;
+  background: rgba(255, 255, 255, 0.72);
+  font-family: inherit;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.shortcut-label {
+  margin-left: 3px;
+}
+

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FocusReader</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main>
+      <header class="brand-row">
+        <div>
+          <p class="eyebrow">FocusReader</p>
+          <h1>Keep the next line quiet.</h1>
+        </div>
+        <span id="statusBadge" class="status-badge">Checking</span>
+      </header>
+
+      <button id="toggleButton" class="primary-button" type="button" disabled>
+        Turn on for this tab
+      </button>
+
+      <p id="availabilityMessage" class="availability-message" role="status">
+        Checking this page…
+      </p>
+
+      <section class="settings" aria-labelledby="settingsTitle">
+        <div class="section-heading">
+          <h2 id="settingsTitle">Guard settings</h2>
+          <span>Saved across Chrome</span>
+        </div>
+
+        <label class="switch-row">
+          <span>
+            <strong>Horizontal guard</strong>
+            <small>Cover the rest of the current line.</small>
+          </span>
+          <input id="horizontalGuard" type="checkbox">
+        </label>
+
+        <label class="switch-row">
+          <span>
+            <strong>Click to pin position</strong>
+            <small>Place the guard, then scroll freely.</small>
+          </span>
+          <input id="fixedPosition" type="checkbox">
+        </label>
+
+        <label class="field-row" for="opacity">
+          <span>
+            <strong>Shield density</strong>
+            <small id="opacityValue">100%</small>
+          </span>
+          <input id="opacity" type="range" min="40" max="100" step="1">
+        </label>
+
+        <label class="field-row" for="color">
+          <span>
+            <strong>Guard color</strong>
+            <small id="colorValue">#585E65</small>
+          </span>
+          <input id="color" type="color">
+        </label>
+      </section>
+
+      <footer>
+        <kbd>Alt</kbd><span>+</span><kbd>Shift</kbd><span>+</span><kbd>F</kbd>
+        <span class="shortcut-label">toggles this tab</span>
+      </footer>
+    </main>
+
+    <script src="../shared/preferences.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>
+
