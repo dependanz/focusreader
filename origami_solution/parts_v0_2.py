@@ -34,6 +34,9 @@ N_LAYERS = 8
 BODY = (SHEET_W - LIP - WALL) / N_LAYERS      # 24.5 mm
 POCKET_LAYERS = (2, 3)      # the shutter end slides between these body layers, counted from the page
 POCKET_DEPTH = BODY
+# A shutter's sheet is exactly as long as the page edge it spans, and the pockets close at the page's edges,
+# so an unhemmed shutter would have no room to slide. One end is folded back by SHUTTER_HEM to give it some.
+SHUTTER_HEM = 3.0
 
 # A crease is (position across the sheet, assignment, FOLD fold angle, role). Walking away from the
 # lip edge, a valley turns toward the sheet's front face and a mountain away from it; the front face
@@ -121,9 +124,11 @@ def frame_layout():
     }
     shutters = {
         "side": {"ends_in": ["top", "bottom"], "span_between_pocket_mouths_mm": PAGE_H - 2 * BODY,
-                 "sheet_length_mm": SHEET_H, "max_cover_mm": SHEET_W / 2.0},
+                 "sheet_length_mm": SHEET_H, "hem_mm": SHUTTER_HEM, "length_mm": SHEET_H - SHUTTER_HEM,
+                 "max_cover_mm": SHEET_W / 2.0},
         "top": {"ends_in": ["left", "right"], "span_between_pocket_mouths_mm": PAGE_W - 2 * BODY,
-                "sheet_length_mm": SHEET_W, "max_cover_mm": SHEET_H / 2.0},
+                "sheet_length_mm": SHEET_W, "hem_mm": SHUTTER_HEM, "length_mm": SHEET_W - SHUTTER_HEM,
+                "max_cover_mm": SHEET_H / 2.0},
     }
     return {"page_mm": [PAGE_W, PAGE_H], "footprint_mm": [PAGE_W + 2 * OVERHANG, PAGE_H], "rails": rails,
             "corner": corner, "shutters": shutters}
@@ -139,9 +144,11 @@ def check_layout():
     layout = frame_layout()
     # Every rail's body stays inside the page's text margin.
     assert BODY <= TEXT_MARGIN, (BODY, TEXT_MARGIN)
-    # A shutter's sheet is exactly long enough to span between opposite pockets and enter both by POCKET_DEPTH.
+    # A shutter's sheet is exactly long enough to span between opposite pockets and enter both by POCKET_DEPTH;
+    # the hem is what gives it room to slide.
     for name, s in layout["shutters"].items():
         assert abs(s["span_between_pocket_mouths_mm"] + 2 * POCKET_DEPTH - s["sheet_length_mm"]) < 1e-9, name
+        assert 0 < s["hem_mm"] < POCKET_DEPTH / 2 and s["length_mm"] == s["sheet_length_mm"] - s["hem_mm"], name
     # Two shutters from opposite sides can cover the whole page between them.
     assert 2 * layout["shutters"]["side"]["max_cover_mm"] >= PAGE_W
     assert 2 * layout["shutters"]["top"]["max_cover_mm"] >= PAGE_H
