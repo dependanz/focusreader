@@ -1,7 +1,9 @@
 # origami_solution — fold-only paper reading guard
 
 Design source for the FocusReader `origami_solution` subproject: a reading guard anyone can make
-from one sheet of ordinary paper by folding alone — no cuts, tears, adhesive, or tools.
+from a few sheets of ordinary paper by folding alone — no cuts, tears, adhesive, or tools. Since
+2026-09-12 the target is v0.2, a paper version of the printed reader's frame and four sliding
+shutters; the single-sheet pleat shutter v0.1 is kept only as a candidate for the bottom shutter.
 
 Authoritative plan, quantitative ledger, and decision log live in devbrain at
 `C:/dev/devbrain/projects/focusreader/`. This directory holds design source only. Do not record
@@ -9,27 +11,53 @@ results here; record them in `NUMBERS.md`.
 
 ## Status
 
-**Nothing has been printed, folded, timed, or measured.** The v0.1 crease pattern is a drawn
-candidate whose geometry has been checked against its generating source. That verifies the drawing,
-not the device.
+**Nothing has been printed, folded, timed, or measured.** The v0.1 pleat pattern and the v0.2 part
+patterns are drawn candidates whose geometry is checked against their generating source. That
+verifies the drawings, not the device.
 
-Unlike the `physical_reader_tool` subproject, this one has no simulation screening stage. The
-pattern has no interior vertices, so flat-foldability and rigid-foldability checks have nothing to
-test, and crease spring-back, inter-layer friction, and crease fatigue depend on creased-paper
-constants that must not be assumed. Its first real evidence requires a person folding paper.
+Simulation screening exists through the separate `foldsim` project, which folds these patterns with
+contact between paper layers. Its material is uncalibrated, so its results rank designs and predict
+nothing about real paper; the first real evidence still requires a person folding paper.
 
 ## Files
 
 | File | Role |
 |---|---|
-| `gen_pattern.py` | Source. Emits the true-scale A4 crease pattern. Dependency-free. |
-| `focusreader_origami_pleat_shutter_v0_1.svg` | Generated output. Git-ignored; regenerate it. |
+| `parts_v0_2.py` | Source for v0.2: the rail and shutter geometry. Dependency-free. |
+| `gen_parts_v0_2.py` | Writes the v0.2 rail and shutters as FOLD files, each with a `.parts.json` sidecar naming its creases' roles. |
+| `pattern.py` | Source for v0.1: the pleat-shutter geometry shared by the generators below. |
+| `gen_pattern.py` | Emits the v0.1 true-scale A4 crease pattern as SVG. |
+| `gen_fold.py` | Emits the v0.1 pattern as FOLD. |
+| `kinematics.py` | The v0.1 closed-form collapse kinematics. |
+| `*.fold`, `*.parts.json`, `*.svg`, `*.csv` | Generated output. Git-ignored; regenerate it. |
 
 Regenerate with:
 
 ```
+python gen_parts_v0_2.py
 python gen_pattern.py
+python gen_fold.py
 ```
+
+## Frame reader v0.2 geometry
+
+Eight A4 sheets: four rails and four shutters.
+
+A rail is one sheet folded across its 210 mm width into a 297 mm strip. From the edge that goes
+under the page: a 12 mm lip, a wall of two 90° creases 2 mm apart standing at the page's edge, then
+eight 24.5 mm body layers folded back and forth on top of the page's edge. The fold between body
+layers 2 and 3 is at the outer edge, so the pocket between them opens toward the page's centre; a
+shutter's end slides into it by up to 24.5 mm. Each rail covers 24.5 mm of the page, inside a
+25 mm margin. Rails join at the corners by the same pockets; that joint is not yet drawn.
+
+A shutter is one sheet folded in half for opacity, with the fold at the window edge and its two open
+ends in the pockets of the rails it spans. Side shutters fold along the long side (297 × 105 mm);
+top and bottom shutters fold across it (210 × 148.5 mm). Sliding a shutter in shrinks the window
+from that side; pulling the top, left and right shutters fully out leaves bottom-only mode.
+
+What holds a shutter in place is the pocket's grip on its end: paper-on-paper friction under
+whatever squeeze the pocket's creases give. That is the design's open question, and the first thing
+`foldsim` tests.
 
 ## Pleat shutter v0.1 geometry
 

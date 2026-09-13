@@ -7,3 +7,10 @@ kinematics_v0_1.svg
 *.png
 __pycache__/
 *.pyc
+# v0.2 frame reader parts, written by gen_parts_v0_2.py.
+rail_v0_2.fold
+rail_v0_2.parts.json
+shutter_side_v0_2.fold
+shutter_side_v0_2.parts.json
+shutter_top_v0_2.fold
+shutter_top_v0_2.parts.json
