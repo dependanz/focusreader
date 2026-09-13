@@ -68,6 +68,26 @@ What holds a shutter in place is the pocket's grip on its end: paper-on-paper fr
 whatever squeeze the pocket's creases give. That is the design's open question, and the first thing
 `foldsim` tests.
 
+## Frame reader v0.3: shutters that can leave the page
+
+v0.2 traps its top and bottom shutters on the page. They ride in the side rails' pockets, and at
+each corner that pocket passes inside the top or bottom rail's clip, whose wall blocks the way out.
+Extending a side rail with a second sheet does not help: any fold-only splice stacks one sheet on the
+other and leaves a step in the pocket floor for a sliding end to catch on.
+
+v0.3 (`parts_v0_3.py`, `gen_parts_v0_3.py`) turns the corners around. The side rails are the outside
+rails, clipping over the ends of the top and bottom rails, so the side rails' pockets run above
+everything and a top or bottom shutter can hang off the page as far as it likes; the part of its
+ends still on the page stays gripped. The top and bottom rails must then fit between the side rails'
+walls, so they are folded across the other way: 210 mm long, eleven 24.5 mm body layers and a
+13.5 mm tuck. The frame's footprint is the page's own, 210 × 297 mm. The base device is six sheets:
+two side rails, two end rails, two shutters. Side shutters are optional: they cannot leave the page,
+so they are folded in quarters, 52.5 mm wide, and left out when the full text width is wanted.
+
+Reading line in bottom-only mode: anywhere from the top to 277 mm, with at least 20 mm of the
+bottom shutter's ends still gripped. Window top: anywhere from 20 mm down. `frame_v0_3.parts.json`
+records the layout.
+
 ## Pleat shutter v0.1 geometry
 
 A4 portrait, 210 × 297 mm, measured from the sheet top:
