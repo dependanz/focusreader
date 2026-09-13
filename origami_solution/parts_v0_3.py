@@ -22,6 +22,13 @@ Parts, every one a whole A4 sheet folded:
     side shutter x2  optional: A4 folded in quarters along its length, 297 x 52.5 mm, 3 mm hem, ends in the
                      end rails' pockets; they cannot leave the page, so they are narrow and can be left out
 
+Clips must squeeze. Every rail is a clip, and a clip whose wall stands taller than what it holds grips
+nothing: in simulation a frame with square-folded walls slid straight off a page tilted 45 degrees, and
+the same frame with its wall creases folded past square, so that lip and body press on the page and on
+the corner stacks, held at 45 and 90 degrees. So the wall creases are folded past square, as the pocket
+creases are. How far is not a design number: it is whatever the paper's crease stiffness gives, which the
+calibration protocol's Part B measures. The simulation stands in with CLIP_PRELOAD_DEG_SIM.
+
 Shutter travel. A top or bottom shutter holds as long as at least ENGAGE_MIN of its ends is still on the
 page inside the side rails' pockets. The bottom shutter can therefore cover from any reading line down to
 the page's bottom with the rest hanging off, and the top shutter can retract until only the top margin is
@@ -38,6 +45,7 @@ END_RAIL_LAYERS = 11
 END_RAIL_TUCK = SHEET_H - LIP - WALL - END_RAIL_LAYERS * BODY   # 13.5
 SIDE_SHUTTER_FOLDS = 3                                  # quarters: 4 layers of 52.5 mm
 ENGAGE_MIN = 20.0                                       # the least of a shutter end that must stay in a pocket
+CLIP_PRELOAD_DEG_SIM = 10.0                             # how far past square the simulation folds every clip
 
 
 def side_rail_creases():
@@ -117,8 +125,10 @@ def frame_layout():
         "window_top_range_mm": [ENGAGE_MIN, PAGE_H],
         "side_cover_min_mm": shutters["side"]["cover_mm"],
     }
+    clips = {"rule": "every rail's wall creases are folded past square so its lip and body press on what is between them",
+             "preload_deg_sim": CLIP_PRELOAD_DEG_SIM, "set_by": "the paper's crease stiffness, calibration protocol Part B"}
     return {"version": "0.3", "page_mm": [PAGE_W, PAGE_H], "footprint_mm": [PAGE_W, PAGE_H], "rails": rails,
-            "corner": corner, "shutters": shutters, "travel": travel}
+            "corner": corner, "clips": clips, "shutters": shutters, "travel": travel}
 
 
 def check_layout():

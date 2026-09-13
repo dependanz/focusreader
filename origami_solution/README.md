@@ -88,6 +88,12 @@ Reading line in bottom-only mode: anywhere from the top to 277 mm, with at least
 bottom shutter's ends still gripped. Window top: anywhere from 20 mm down. `frame_v0_3.parts.json`
 records the layout.
 
+Every clip must squeeze. A rail whose wall stands taller than what it holds grips nothing: in
+simulation the frame slid straight off a page tilted 45°, and with its wall creases folded past
+square, so that lip and body press on the page and on the corner stacks, it held at 45° and 90°. So
+the wall creases are folded past square, like the pocket creases. How far is whatever the paper's
+crease stiffness gives, which the calibration protocol measures.
+
 ## Pleat shutter v0.1 geometry
 
 A4 portrait, 210 × 297 mm, measured from the sheet top:
