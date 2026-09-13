@@ -48,7 +48,16 @@ under the page: a 12 mm lip, a wall of two 90° creases 2 mm apart standing at t
 eight 24.5 mm body layers folded back and forth on top of the page's edge. The fold between body
 layers 2 and 3 is at the outer edge, so the pocket between them opens toward the page's centre; a
 shutter's end slides into it by up to 24.5 mm. Each rail covers 24.5 mm of the page, inside a
-25 mm margin. Rails join at the corners by the same pockets; that joint is not yet drawn.
+25 mm margin.
+
+The corner joint needs no extra fold. Every rail is a clip on the page's edge, lip under and body
+over. The left and right rails run the page's full height. The top and bottom rails, being the same
+297 mm part, overhang the page's sides by 43.5 mm each and clip on over the side rails' ends: at each
+corner the side rail's end, lip and body together, sits inside the top or bottom rail's clip, between
+its lip and its body, over the page's corner. The stack there is about 1.0 mm of paper in a 2 mm
+clip. The four shutters then tie opposite rails together through their pockets. Assemble by clipping
+the side rails on first, then the top and bottom rails over their ends. The overhangs are where the
+frame is picked up. `frame_v0_2.parts.json` records this layout for the simulation.
 
 A shutter is one sheet folded in half for opacity, with the fold at the window edge and its two open
 ends in the pockets of the rails it spans. Side shutters fold along the long side (297 × 105 mm);

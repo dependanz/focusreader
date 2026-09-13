@@ -14,7 +14,7 @@ import json
 import pathlib
 
 from parts_v0_2 import (BODY, LIP, N_LAYERS, POCKET_DEPTH, POCKET_LAYERS, SHEET_H, SHEET_W, WALL,
-                        rail_creases, rail_layers, shutter_creases, summary)
+                        check_layout, rail_creases, rail_layers, shutter_creases, summary)
 
 HERE = pathlib.Path(__file__).resolve().parent
 
@@ -107,5 +107,11 @@ if __name__ == "__main__":
               "slide into rail pockets. Design only; nothing folded or measured.",
               {"part": f"shutter_{orientation}", "sheet_mm": [w, h], "panel_mm": [w, h / 2.0],
                "end_in_pocket_mm": POCKET_DEPTH})
+    # The frame is an assembly of the parts above, not a sheet, so it has no FOLD file: the layout sidecar
+    # says where each rail sits, how the corners join, and which pockets each shutter's ends use.
+    layout = check_layout()
+    layout["part"] = "frame"
+    (HERE / "frame_v0_2.parts.json").write_text(json.dumps(layout, indent=1) + "\n", encoding="utf-8")
+    print("frame_v0_2.parts.json: layout checked and written")
     for key, value in summary().items():
-        print(f"{key:30} {value}")
+        print(f"{key:32} {value}")

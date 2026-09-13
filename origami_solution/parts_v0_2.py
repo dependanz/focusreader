@@ -79,6 +79,80 @@ def shutter_creases(orientation):
     return w, h, [(h / 2.0, "V", FULL, "double_fold")]
 
 
+# ---------------------------------------------------------------------------------------------------
+# Frame layout and the corner joint.
+#
+# Every rail is a clip: its lip goes under the page's edge and its body layers go over it, with the wall
+# standing at the edge. Four rails clip onto the page's four edges, and the four shutters tie opposite rails
+# together through their pockets. The corner joint needs no extra fold: at each corner the side rail's end,
+# lip and body together, sits inside the top or bottom rail's clip, between that rail's lip and its body
+# layer 1, over the page's corner, for the clip's full depth. The side rails therefore run the page's full
+# height, and the top and bottom rails, being the same 297 mm part, overhang the page's sides by
+# OVERHANG on each side. The overhangs are where the frame is picked up.
+#
+# Page coordinates: x across from the left edge, y down from the top edge, millimetres.
+
+PAGE_W, PAGE_H = SHEET_W, SHEET_H
+RAIL_LEN = SHEET_H                          # one A4 folded across its width
+OVERHANG = (RAIL_LEN - PAGE_W) / 2.0        # 43.5 mm each side for the top and bottom rails
+TEXT_MARGIN = 25.0                          # the margin of an A4 page with a 25 mm border
+
+
+def frame_layout():
+    rails = {
+        "left": {"runs_along": "y", "page_edge": "x = 0", "span_mm": [0.0, PAGE_H], "body_over_page_mm": BODY,
+                 "corner_role": "inside", "length_mm": RAIL_LEN},
+        "right": {"runs_along": "y", "page_edge": f"x = {PAGE_W:g}", "span_mm": [0.0, PAGE_H], "body_over_page_mm": BODY,
+                  "corner_role": "inside", "length_mm": RAIL_LEN},
+        "top": {"runs_along": "x", "page_edge": "y = 0", "span_mm": [-OVERHANG, PAGE_W + OVERHANG],
+                "body_over_page_mm": BODY, "corner_role": "outside", "length_mm": RAIL_LEN},
+        "bottom": {"runs_along": "x", "page_edge": f"y = {PAGE_H:g}", "span_mm": [-OVERHANG, PAGE_W + OVERHANG],
+                   "body_over_page_mm": BODY, "corner_role": "outside", "length_mm": RAIL_LEN},
+    }
+    corner = {
+        "joint": "the side rail's end sits inside the top or bottom rail's clip, between its lip and body layer 1, "
+                 "over the page's corner",
+        "depth_mm": BODY,
+        "stack_from_below": ["outside rail lip", "inside rail lip", "page", f"inside rail body, {N_LAYERS} layers",
+                             "outside rail body"],
+        "stack_nominal_mm": corner_stack_nominal_mm(),
+        "clip_opening_mm": WALL,
+        "assembly_order": "clip the side rails onto the page first, then the top and bottom rails over their ends",
+    }
+    shutters = {
+        "side": {"ends_in": ["top", "bottom"], "span_between_pocket_mouths_mm": PAGE_H - 2 * BODY,
+                 "sheet_length_mm": SHEET_H, "max_cover_mm": SHEET_W / 2.0},
+        "top": {"ends_in": ["left", "right"], "span_between_pocket_mouths_mm": PAGE_W - 2 * BODY,
+                "sheet_length_mm": SHEET_W, "max_cover_mm": SHEET_H / 2.0},
+    }
+    return {"page_mm": [PAGE_W, PAGE_H], "footprint_mm": [PAGE_W + 2 * OVERHANG, PAGE_H], "rails": rails,
+            "corner": corner, "shutters": shutters}
+
+
+def corner_stack_nominal_mm():
+    """Thickness the outside rail's clip must take at a corner: the inside rail's lip and body layers plus
+    the page, with the folds pressed flat. Nominal, from the assumed sheet thickness."""
+    return (1 + N_LAYERS + 1) * SHEET_THICKNESS
+
+
+def check_layout():
+    layout = frame_layout()
+    # Every rail's body stays inside the page's text margin.
+    assert BODY <= TEXT_MARGIN, (BODY, TEXT_MARGIN)
+    # A shutter's sheet is exactly long enough to span between opposite pockets and enter both by POCKET_DEPTH.
+    for name, s in layout["shutters"].items():
+        assert abs(s["span_between_pocket_mouths_mm"] + 2 * POCKET_DEPTH - s["sheet_length_mm"]) < 1e-9, name
+    # Two shutters from opposite sides can cover the whole page between them.
+    assert 2 * layout["shutters"]["side"]["max_cover_mm"] >= PAGE_W
+    assert 2 * layout["shutters"]["top"]["max_cover_mm"] >= PAGE_H
+    # The corner stack fits the clip with room to spare.
+    assert layout["corner"]["stack_nominal_mm"] <= 0.75 * WALL, (layout["corner"]["stack_nominal_mm"], WALL)
+    # Side rails run the page's full height; top and bottom rails overhang symmetrically.
+    assert layout["rails"]["left"]["span_mm"] == [0.0, PAGE_H]
+    assert abs(layout["rails"]["top"]["span_mm"][0] + OVERHANG) < 1e-9
+    return layout
+
+
 def summary():
     rail = rail_creases()
     return {
@@ -96,12 +170,18 @@ def summary():
         "side_shutter_panel_mm": (SHEET_H, SHEET_W / 2.0),
         "top_shutter_panel_mm": (SHEET_W, SHEET_H / 2.0),
         "folds_per_device": 4 * len(rail) + 4,
+        "frame_footprint_mm": (PAGE_W + 2 * OVERHANG, PAGE_H),
+        "top_and_bottom_rail_overhang_mm": OVERHANG,
+        "corner_stack_nominal_mm": corner_stack_nominal_mm(),
+        "corner_clip_opening_mm": WALL,
     }
 
 
 if __name__ == "__main__":
+    check_layout()
     for key, value in summary().items():
-        print(f"{key:30} {value}")
+        print(f"{key:32} {value}")
     print("rail creases from the lip edge:")
     for y, kind, angle, role in rail_creases():
         print(f"  {y:7.2f} mm  {kind}  {angle:+6.1f}  {role}")
+    print("corner joint:", frame_layout()["corner"]["joint"])
